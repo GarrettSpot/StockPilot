@@ -52,6 +52,9 @@ spec:
               value: {{ .Values.postgres.user | quote }}
             - name: POSTGRES_PASSWORD
               value: {{ .Values.postgres.password | quote }}
+            # Use a subdirectory so initdb ignores the mount point's lost+found (EBS).
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
           volumeMounts:
             - name: data
               mountPath: /var/lib/postgresql/data
