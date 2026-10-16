@@ -35,6 +35,8 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
+      - name: Compute lowercase image owner
+        run: echo "OWNER_LC=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_ENV"
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -42,26 +44,26 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build images
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/stockpilot-backend:${{ github.sha }} ./backend
-          docker build -t ghcr.io/${{ github.repository_owner }}/stockpilot-frontend:${{ github.sha }} ./frontend
+          docker build -t ghcr.io/${{ env.OWNER_LC }}/stockpilot-backend:${{ github.sha }} ./backend
+          docker build -t ghcr.io/${{ env.OWNER_LC }}/stockpilot-frontend:${{ github.sha }} ./frontend
       - name: Scan backend
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ghcr.io/${{ github.repository_owner }}/stockpilot-backend:${{ github.sha }}
+          image-ref: ghcr.io/${{ env.OWNER_LC }}/stockpilot-backend:${{ github.sha }}
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: "1"
       - name: Scan frontend
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ghcr.io/${{ github.repository_owner }}/stockpilot-frontend:${{ github.sha }}
+          image-ref: ghcr.io/${{ env.OWNER_LC }}/stockpilot-frontend:${{ github.sha }}
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: "1"
       - name: Push images
         run: |
-          docker push ghcr.io/${{ github.repository_owner }}/stockpilot-backend:${{ github.sha }}
-          docker push ghcr.io/${{ github.repository_owner }}/stockpilot-frontend:${{ github.sha }}
+          docker push ghcr.io/${{ env.OWNER_LC }}/stockpilot-backend:${{ github.sha }}
+          docker push ghcr.io/${{ env.OWNER_LC }}/stockpilot-frontend:${{ github.sha }}
 
   deploy:
     # Enable by setting repository variable ENABLE_DEPLOY=true once the EKS cluster
@@ -74,6 +76,8 @@ jobs:
       packages: read
     steps:
       - uses: actions/checkout@v4
+      - name: Compute lowercase image owner
+        run: echo "OWNER_LC=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_ENV"
       - uses: azure/setup-helm@v4
       - name: Configure kubectl
         env:
@@ -86,5 +90,5 @@ jobs:
           helm upgrade --install stockpilot ./helm/stockpilot -n stockpilot --create-namespace \
             --set backend.tag=${{ github.sha }} \
             --set frontend.tag=${{ github.sha }} \
-            --set backend.image=ghcr.io/${{ github.repository_owner }}/stockpilot-backend \
-            --set frontend.image=ghcr.io/${{ github.repository_owner }}/stockpilot-frontend
+            --set backend.image=ghcr.io/${{ env.OWNER_LC }}/stockpilot-backend \
+            --set frontend.image=ghcr.io/${{ env.OWNER_LC }}/stockpilot-frontend
