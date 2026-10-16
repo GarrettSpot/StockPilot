@@ -83,6 +83,29 @@
       "Resource": "*"
     },
     {
+      "Sid": "KMSForEKSSecretEncryption",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateKey",
+        "kms:DescribeKey",
+        "kms:CreateAlias",
+        "kms:DeleteAlias",
+        "kms:UpdateAlias",
+        "kms:ListAliases",
+        "kms:ListKeys",
+        "kms:EnableKeyRotation",
+        "kms:GetKeyRotationStatus",
+        "kms:GetKeyPolicy",
+        "kms:PutKeyPolicy",
+        "kms:TagResource",
+        "kms:UntagResource",
+        "kms:ListResourceTags",
+        "kms:ScheduleKeyDeletion",
+        "kms:CancelKeyDeletion"
+      ],
+      "Resource": "*"
+    },
+    {
       "Sid": "ReadSSMAndTagging",
       "Effect": "Allow",
       "Action": [
