@@ -45,14 +45,14 @@ jobs:
           docker build -t ghcr.io/${{ github.repository_owner }}/stockpilot-backend:${{ github.sha }} ./backend
           docker build -t ghcr.io/${{ github.repository_owner }}/stockpilot-frontend:${{ github.sha }} ./frontend
       - name: Scan backend
-        uses: aquasecurity/trivy-action@0.30.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ghcr.io/${{ github.repository_owner }}/stockpilot-backend:${{ github.sha }}
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: "1"
       - name: Scan frontend
-        uses: aquasecurity/trivy-action@0.30.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ghcr.io/${{ github.repository_owner }}/stockpilot-frontend:${{ github.sha }}
           severity: HIGH,CRITICAL
@@ -64,7 +64,9 @@ jobs:
           docker push ghcr.io/${{ github.repository_owner }}/stockpilot-frontend:${{ github.sha }}
 
   deploy:
-    if: github.ref == 'refs/heads/main'
+    # Enable by setting repository variable ENABLE_DEPLOY=true once the EKS cluster
+    # exists and the KUBE_CONFIG_DATA secret is configured.
+    if: github.ref == 'refs/heads/main' && vars.ENABLE_DEPLOY == 'true'
     needs: build-scan-push
     runs-on: ubuntu-latest
     permissions:
