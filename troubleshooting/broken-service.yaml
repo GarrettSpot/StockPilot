@@ -1,0 +1,15 @@
+# Deliberately broken: the Service selector does not match any Pod labels,
+# so it has no endpoints and routes no traffic.
+# Investigate with: kubectl get endpoints / kubectl get pods --show-labels
+apiVersion: v1
+kind: Service
+metadata:
+  name: broken-service
+  namespace: stockpilot
+spec:
+  type: ClusterIP
+  selector:
+    app: backend-does-not-exist
+  ports:
+    - port: 8000
+      targetPort: 8000

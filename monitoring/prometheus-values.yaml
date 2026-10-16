@@ -1,0 +1,12 @@
+grafana:
+  enabled: true
+  adminPassword: admin
+
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    retention: 7d
+
+alertmanager:
+  enabled: false
