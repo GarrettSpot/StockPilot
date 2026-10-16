@@ -1,8 +1,8 @@
 backend:
-  replicas: 1
+  replicas: 2
 
 frontend:
-  replicas: 1
+  replicas: 2
 
 ingress:
   enabled: true
@@ -10,7 +10,7 @@ ingress:
 
 hpa:
   enabled: true
-  minReplicas: 1
+  minReplicas: 2
   maxReplicas: 3
 
 serviceMonitor:

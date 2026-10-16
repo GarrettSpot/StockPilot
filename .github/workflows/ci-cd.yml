@@ -74,11 +74,18 @@ jobs:
     permissions:
       contents: read
       packages: read
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
     steps:
       - uses: actions/checkout@v4
       - name: Compute lowercase image owner
         run: echo "OWNER_LC=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_ENV"
       - uses: azure/setup-helm@v4
+      - name: Ensure AWS CLI (for the kubeconfig exec plugin)
+        run: command -v aws >/dev/null 2>&1 || pip install awscli
       - name: Configure kubectl
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
@@ -88,7 +95,10 @@ jobs:
       - name: Deploy with Helm
         run: |
           helm upgrade --install stockpilot ./helm/stockpilot -n stockpilot --create-namespace \
+            -f helm/stockpilot/values-dev.yaml \
             --set backend.tag=${{ github.sha }} \
             --set frontend.tag=${{ github.sha }} \
             --set backend.image=ghcr.io/${{ env.OWNER_LC }}/stockpilot-backend \
             --set frontend.image=ghcr.io/${{ env.OWNER_LC }}/stockpilot-frontend
+          kubectl -n stockpilot rollout status deployment/backend --timeout=180s
+          kubectl -n stockpilot rollout status deployment/frontend --timeout=120s
