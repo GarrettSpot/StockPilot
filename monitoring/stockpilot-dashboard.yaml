@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stockpilot-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  stockpilot.json: |
+    {
+      "title": "StockPilot API",
+      "uid": "stockpilot-api",
+      "tags": ["stockpilot"],
+      "timezone": "browser",
+      "schemaVersion": 39,
+      "version": 1,
+      "refresh": "10s",
+      "time": { "from": "now-30m", "to": "now" },
+      "panels": [
+        {
+          "type": "timeseries",
+          "title": "Request rate by handler",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum(rate(http_requests_total[5m])) by (handler)",
+              "legendFormat": "{{handler}}"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "p95 request latency",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))",
+              "legendFormat": "p95"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Requests (last 5m)",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 6, "w": 8, "x": 0, "y": 8 },
+          "targets": [
+            { "refId": "A", "expr": "sum(increase(http_requests_total[5m]))" }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Requests by status",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 6, "w": 16, "x": 8, "y": 8 },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum(rate(http_requests_total[5m])) by (status)",
+              "legendFormat": "{{status}}"
+            }
+          ]
+        }
+      ]
+    }
