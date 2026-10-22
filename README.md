@@ -9,9 +9,7 @@ reorder thresholds, and is shipped through a full CI/CD and observability stack.
 
 ## Video Presentation
 
-<video width="640" height="360" controls>
-  <source src="https://github.com/GarrettSpot/StockPilot/blob/main/Video_Presentation.mp4" type="video/mp4">
-</video>   
+https://github.com/user-attachments/assets/21303fd8-bb0a-4dd7-9471-f39fc655877d
 
 ## Stack
 
