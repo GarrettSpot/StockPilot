@@ -7,6 +7,12 @@ reorder thresholds, and is shipped through a full CI/CD and observability stack.
 > This is an original application domain (inventory management), not a copy of
 > the reference TaskBoard app. The DevOps architecture follows the course model.
 
+## Video Presentation
+
+<video width="640" height="360" controls>
+  <source src="https://github.com/GarrettSpot/StockPilot/blob/main/Video_Presentation.mp4" type="video/mp4">
+</video>   
+
 ## Stack
 
 - **Frontend:** React + Vite, responsive dashboard, served by Nginx (non-root)
