@@ -7,10 +7,6 @@ reorder thresholds, and is shipped through a full CI/CD and observability stack.
 > This is an original application domain (inventory management), not a copy of
 > the reference TaskBoard app. The DevOps architecture follows the course model.
 
-## Video Presentation
-
-https://github.com/user-attachments/assets/21303fd8-bb0a-4dd7-9471-f39fc655877d
-
 ## Stack
 
 - **Frontend:** React + Vite, responsive dashboard, served by Nginx (non-root)
